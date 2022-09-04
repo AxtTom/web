@@ -29,7 +29,8 @@ import nodemailer from 'nodemailer';
         app.use('/', proxy('127.0.0.1:4200'));
     }
     else {
-        app.use('/', express.static(__dirname + '/angular/dist')); // TODO: Make sure path is right
+        console.log(__dirname + '/angular/dist');
+        app.use('/', express.static(__dirname + '/angular/dist/angular')); // TODO: Make sure path is right
     }
 
     httpServer.on('upgrade', (req, socket, head) => {
