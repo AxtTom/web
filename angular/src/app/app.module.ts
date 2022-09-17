@@ -9,6 +9,9 @@ import { HomeComponent } from './home/home.component';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { PolicyComponent } from './policy/policy.component';
 import { ImprintComponent } from './imprint/imprint.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoginComponent } from './pages/login/login.component';
+import { HttpInterceptorService } from './services/http-interceptor.service';
 
 const config: SocketIoConfig = {
   url: 'http://localhost:8080'
@@ -19,16 +22,24 @@ const config: SocketIoConfig = {
     AppComponent,
     HomeComponent,
     PolicyComponent,
-    ImprintComponent
+    ImprintComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
