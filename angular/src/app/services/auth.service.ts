@@ -38,6 +38,6 @@ export class AuthService {
   }
 
   getToken(): string {
-    return '';
+    return this.storage.get('token');
   }
 }
