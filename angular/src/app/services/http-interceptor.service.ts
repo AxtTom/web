@@ -14,10 +14,13 @@ export class HttpInterceptorService implements HttpInterceptor {
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.auth.isLoggedIn()) {
+    return this.auth.loggedIn().mer
+  }
+
+  private async handle(req: HttpRequest<any>, next: HttpHandler) {
+    if (await this.auth.loggedIn()) {
       req.headers.set('Authorization', this.auth.getToken());
     }
-
-    return next.handle(req);
+    return next.handle(req).toPromise();
   }
 }

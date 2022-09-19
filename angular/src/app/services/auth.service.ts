@@ -13,14 +13,15 @@ export class AuthService {
     private http: HttpClient
   ) { }
 
-  password(username: string, password: string) {
+  async password(username: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.http.put('/api/auth', {
         method: 'password',
         username,
         password
       } as Auth).subscribe((res) => {
-        
+        console.log(res);
+        resolve(true); // TODO check for status 200
       });
     });
   }
@@ -30,7 +31,7 @@ export class AuthService {
       if (this.storage.get('token')) {
         this.http.get('/api/auth').subscribe((res) => {
           resolve(true);
-        });
+        }); // TODO dafuc shouldnt work
       }
       resolve(false);
     });

@@ -1,0 +1,27 @@
+GET http://localhost:8080
+
+###
+
+GET http://localhost:8080/api/auth
+Authorization: geu6m2/NcLcKRAvV433Js3JeOZiddwRHlsQ8IShvDGoF/qbc0KKtMoxIQTSD/ESd
+
+###
+
+POST http://localhost:8080/api/auth
+content-type: application/json
+
+{
+    "method": "password",
+    "username": "AxtTom",
+    "password": "Asdf!1234"
+}
+
+###
+
+POST http://localhost:8080/api/register
+content-type: application/json
+
+{
+    "username": "AxtTom",
+    "password": "Asdf!1234"
+}
