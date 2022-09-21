@@ -1,20 +1,24 @@
 import 'dotenv/config';
-import './environment.json';
+import environments from './environments.json';
 import { MongoClient, Collection, Document } from 'mongodb';
 import { env } from 'process';
 import express from 'express';
 import http from 'http';
+import proxy from 'express-http-proxy';
+import { AuthController } from './controller/auth';
+import { Values } from './models/values';
 
 (async () => {
-    const values = {
-        users: Collection<Document>
-    };
+    const environment = environments[env.ENVIRONMENT];
+
+    let values: Values = {} as any;
     
     console.log('Connecting to MongoDB...');
-    const mongo = new MongoClient(env.MONGOURL);
+    const mongo = new MongoClient(environment.mongoUrl);
     await mongo.connect();
-    const db = mongo.db(env.MONGONAME);
+    const db = mongo.db(environment.mongoDatabase);
     values.users = db.collection('users');
+    values.sessions = db.collection('sessions');
     console.log('Connected to MongoDB!');
 
     console.log('Starting Server...');
@@ -23,7 +27,18 @@ import http from 'http';
 
     const server = http.createServer(app);
 
-    server.listen(env.PORT, parseInt(env.BIND), () => {
-        console.log('Server started!');
+    new AuthController(app, values);
+
+    // TODO: root rewrite?
+    if (env.ENVIRONMENT == 'DEBUG') {
+        //app.use('/', proxy('127.0.0.1:4200'));
+        app.get('/', (req, res) => res.send('no frontend'));
+    }
+    else if (env.ENVIRONMENT == 'RELEASE') {
+        app.use('/', express.static(__dirname + '../angular/dist/angular'));
+    }
+
+    server.listen(environment.port, environment.bind, () => {
+        console.log(`Server started on ${environment.bind}:${environment.port}!`);
     });
 })();
