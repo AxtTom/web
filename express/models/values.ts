@@ -1,7 +1,6 @@
-import { Collection, Document } from "mongodb"
+import { Collection, Document } from 'mongodb';
 
-
-export class Values {
+export interface Values {
     users: Collection<Document>;
     sessions: Collection<Document>;
 }

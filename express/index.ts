@@ -41,4 +41,10 @@ import { Values } from './models/values';
     server.listen(environment.port, environment.bind, () => {
         console.log(`Server started on ${environment.bind}:${environment.port}!`);
     });
+
+    if (env.ENVIRONMENT == 'RELEASE') {
+        process.on('uncaughtException', (error) => {
+            console.log('Uncaught: ' + error);
+        });
+    }
 })();

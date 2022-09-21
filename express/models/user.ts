@@ -1,7 +1,9 @@
-export class User {
-    _id: string | number; // TODO: Find out which one
+export interface User {
+    _id?: string;
     username: string;
     password: string;
     displayName: string;
+    groups: string[];
+    pin?: string;
     //enabled? locked? logintries? lastlogin?
 }
