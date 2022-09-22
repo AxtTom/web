@@ -5,8 +5,8 @@ Content-Type: application/json
 
 {
     "method": "password",
-    "username": "axttom",
-    "password": "Asdf!1234"
+    "username": "admin",
+    "password": "7VKL8dfYZTOeKjgt"
 }
 
 ### Register
@@ -23,9 +23,11 @@ Content-Type: application/json
 ### Get Current User
 
 GET  http://127.0.0.1:8080/api/auth
-Authorization: 77JY6ryXfS1TzQcvdOO2iV+MvvOOuZtrGQOrc0JjdOSKieNHR5rQUbnAdafARjJh
+Authorization: nl/c9y+f8Xm1uwY3YHFBMxBUxPAGzdRN4IUonVhHBZTdQArpqndbPHKa9K7LqE/l
 
-### Delete All Sessions
+### Delete Current Sessions
 
 DELETE  http://127.0.0.1:8080/api/auth
-Authorization: 77JY6ryXfS1TzQcvdOO2iV+MvvOOuZtrGQOrc0JjdOSKieNHR5rQUbnAdafARjJh
+Authorization: nl/c9y+f8Xm1uwY3YHFBMxBUxPAGzdRN4IUonVhHBZTdQArpqndbPHKa9K7LqE/l
+
+###

@@ -7,8 +7,18 @@ import http from 'http';
 import proxy from 'express-http-proxy';
 import { AuthController } from './controller/auth';
 import { Values } from './models/values';
+import { User } from './models/user';
+import argon2 from 'argon2';
+import crypto from 'crypto';
 
 (async () => {
+    // Check .env
+    if (
+        !env.ENVIRONMENT ||
+        !env.PEPPER
+    ) {
+        throw '.env not correct!';
+    }
     const environment = environments[env.ENVIRONMENT];
 
     let values: Values = {} as any;
@@ -19,7 +29,22 @@ import { Values } from './models/values';
     const db = mongo.db(environment.mongoDatabase);
     values.users = db.collection('users');
     values.sessions = db.collection('sessions');
+    values.pins = db.collection('pins');
     console.log('Connected to MongoDB!');
+
+    if (!await values.users.findOne({ username: 'admin' })) {
+        const password = crypto.randomBytes(12).toString('base64url');
+        const user: User = {
+            displayName: 'Admin',
+            username: 'admin',
+            password: await argon2.hash(password + 'admin' + env.PEPPER),
+            groups: [
+                'admin'
+            ]
+        };
+        await values.users.insertOne(user as any);
+        console.log('Admin user with password: ' + password);
+    }
 
     console.log('Starting Server...');
     const app = express();
@@ -47,4 +72,10 @@ import { Values } from './models/values';
             console.log('Uncaught: ' + error);
         });
     }
-})();
+})()
+.then(() => {
+    console.log('main() finished!');
+})
+.catch((error) => {
+    console.log(error);
+});
