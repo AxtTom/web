@@ -107,8 +107,9 @@ export class AuthController extends BaseController {
         app.delete('/api/auth', async (req, res) => {
             try {
                 let user: User = res.locals.user;
-                await this.values.sessions.deleteMany({ user: user._id });
-                res.sendStatus(200);
+                const result = await this.values.sessions.deleteMany({ user: user._id });
+                if (result.deletedCount > 0) res.sendStatus(200);
+                else res.sendStatus(404);
             }
             catch (error) {
                 console.log(error);

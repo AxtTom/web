@@ -1,5 +1,6 @@
 export interface Pin {
+    _id?: string;
     pin: string;
     name: string;
-    groups: string[];
+    group: string; // enter pin | select group -> for login
 }
