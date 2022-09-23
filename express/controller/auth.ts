@@ -1,11 +1,11 @@
 import { Values } from "../models/values";
 import { Express } from 'express';
 import { User } from "../models/user";
-import argon2d from "argon2";
 import crypto from 'crypto';
 import { Collection, Document } from 'mongodb';
 import { env } from "process";
 import { BaseController } from "./base";
+import { pash } from "../util";
 
 export class AuthController extends BaseController {
     constructor(app: Express, values: Values) {
@@ -27,7 +27,7 @@ export class AuthController extends BaseController {
 
                         const user = await values.users.findOne<User>({ username: data.username });
                         if (!user) return res.sendStatus(404);
-                        if (!await argon2d.verify(user.password, data.password + data.username.toLowerCase() + env.PEPPER)) return res.sendStatus(401); // Conflict
+                        if (pash(data.password + data.username.toLowerCase()) != user.password) return res.sendStatus(401); // Conflict
                         
                         const session = {
                             user: user._id,
@@ -74,14 +74,15 @@ export class AuthController extends BaseController {
                 if (
                     !data.username || !data.password || !data.confirm || 
                     data.password != data.confirm ||
-                    !data.username.match(/^[0-9a-zA-Z].{3,24}$/) ||
-                    !data.password.match(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[\]:;<>,.?/~_+-=|\\]).{7,32}$/)
+                    !data.username.match(/^[a-zA-Z0-9]{4,32}$/) ||
+                    !data.password.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,32}$/) || // (?=.*?[#?!@$%^&*-])
+                    !data.password.match(/^[a-zA-Z0-9#?!@$%^&*-]{8,32}$/)
                 ) return res.sendStatus(400);
                 
                 const user: User = {
                     displayName: data.username,
                     username: data.username.toLowerCase(),
-                    password: await argon2d.hash(data.password + data.username.toLowerCase() + env.PEPPER),
+                    password: pash(data.password + data.username.toLowerCase()),
                     groups: []
                 };
                 await values.users.insertOne(user as any);

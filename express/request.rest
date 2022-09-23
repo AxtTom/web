@@ -6,7 +6,7 @@ Content-Type: application/json
 {
     "method": "password",
     "username": "admin",
-    "password": "7VKL8dfYZTOeKjgt"
+    "password": "ziKIIcVq6jaEZFc5"
 }
 
 ### Register
@@ -23,11 +23,30 @@ Content-Type: application/json
 ### Get Current User
 
 GET  http://127.0.0.1:8080/api/auth
-Authorization: nl/c9y+f8Xm1uwY3YHFBMxBUxPAGzdRN4IUonVhHBZTdQArpqndbPHKa9K7LqE/l
+Authorization: izkBho/ramS2ptmPJd8cjgc6crmgetS/gKe859/BztZ+xSFZyvtpXiEC0qGTMDn8
 
 ### Delete Current Sessions
 
 DELETE  http://127.0.0.1:8080/api/auth
-Authorization: nl/c9y+f8Xm1uwY3YHFBMxBUxPAGzdRN4IUonVhHBZTdQArpqndbPHKa9K7LqE/l
+Authorization: 
+
+### Admin: get pins
+
+GET  http://127.0.0.1:8080/api/admin/pins
+Authorization: izkBho/ramS2ptmPJd8cjgc6crmgetS/gKe859/BztZ+xSFZyvtpXiEC0qGTMDn8
+
+### Admin: create pin
+
+PUT http://127.0.0.1:8080/api/admin/pin
+Authorization: izkBho/ramS2ptmPJd8cjgc6crmgetS/gKe859/BztZ+xSFZyvtpXiEC0qGTMDn8
+Content-Type: application/json
+
+{
+    "pin": "123456",
+    "name": "Maximilian Ritter",
+    "group": "Tai12a"
+}
 
 ###
+GET http://127.0.0.1:8080/api/pin
+Authorization: 123456;Tai12a

@@ -8,8 +8,10 @@ import proxy from 'express-http-proxy';
 import { AuthController } from './controller/auth';
 import { Values } from './models/values';
 import { User } from './models/user';
-import argon2 from 'argon2';
 import crypto from 'crypto';
+import { PinController } from './controller/pin';
+import { PinAdminController } from './controller/admin/pin';
+import { pash } from './util';
 
 (async () => {
     // Check .env
@@ -37,7 +39,7 @@ import crypto from 'crypto';
         const user: User = {
             displayName: 'Admin',
             username: 'admin',
-            password: await argon2.hash(password + 'admin' + env.PEPPER),
+            password: pash(password + 'admin'),
             groups: [
                 'admin'
             ]
@@ -53,6 +55,9 @@ import crypto from 'crypto';
     const server = http.createServer(app);
 
     new AuthController(app, values);
+    new PinController(app, values);
+
+    new PinAdminController(app, values);
 
     // TODO: root rewrite?
     if (env.ENVIRONMENT == 'DEBUG') {
