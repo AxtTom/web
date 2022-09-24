@@ -12,6 +12,7 @@ import crypto from 'crypto';
 import { PinController } from './controller/pin';
 import { PinAdminController } from './controller/admin/pin';
 import { pash } from './util';
+import { createProxyServer } from 'http-proxy';
 
 (async () => {
     // Check .env
@@ -53,6 +54,7 @@ import { pash } from './util';
     app.use(express.json());
 
     const server = http.createServer(app);
+    const wsproxy = createProxyServer({ target: 'http://localhost:5173', ws: true });
 
     new AuthController(app, values);
     new PinController(app, values);
@@ -61,8 +63,12 @@ import { pash } from './util';
 
     // TODO: root rewrite?
     if (env.ENVIRONMENT == 'DEBUG') {
-        //app.use('/', proxy('127.0.0.1:4200'));
-        app.get('/', (req, res) => res.send('no frontend'));
+        app.use('/', proxy('127.0.0.1:5173'));
+
+        server.on('upgrade', (req, socket, head) => {
+            console.log("proxying upgrade request", req.url);
+            wsproxy.ws(req, socket, head);
+        });
     }
     else if (env.ENVIRONMENT == 'RELEASE') {
         app.use('/', express.static(__dirname + '../angular/dist/angular'));

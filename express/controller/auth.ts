@@ -25,7 +25,7 @@ export class AuthController extends BaseController {
                     case 'password': {
                         if (!data.username || !data.password) return res.sendStatus(400);
 
-                        const user = await values.users.findOne<User>({ username: data.username });
+                        const user = await values.users.findOne<User>({ username: data.username.toLowerCase() });
                         if (!user) return res.sendStatus(404);
                         if (pash(data.password + data.username.toLowerCase()) != user.password) return res.sendStatus(401); // Conflict
                         

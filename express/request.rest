@@ -6,7 +6,7 @@ Content-Type: application/json
 {
     "method": "password",
     "username": "admin",
-    "password": "ziKIIcVq6jaEZFc5"
+    "password": "9beUWw2d-EuH3Cve"
 }
 
 ### Register
